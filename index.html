@@ -75,6 +75,39 @@
       height: 100%;
       object-fit: cover;
     }
+
+    /* LIGHT FLASH */
+.card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  pointer-events: none;
+
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255,255,255,0.4),
+    transparent
+  );
+
+  transform: skewX(-20deg);
+}
+
+.card.flash::after {
+  animation: flashMove 0.6s ease;
+}
+
+@keyframes flashMove {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 150%;
+  }
+}
   </style>
 </head>
 
@@ -143,6 +176,13 @@ card.addEventListener("touchend", (e) => {
 
   if (Math.abs(diff) > 50) {
     card.classList.toggle("flipped");
+
+// Flash triggern
+card.classList.add("flash");
+setTimeout(() => {
+  card.classList.remove("flash");
+}, 600);
+    
   } else {
     roar.currentTime = 0;
     roar.play();
