@@ -87,9 +87,31 @@
 <script>
   const card = document.getElementById("card");
 
-  // Zum Testen: Tap = Flip
-  card.addEventListener("click", () => {
-    card.classList.toggle("flipped");
+  let startX = 0;
+  let endX = 0;
+
+  // Audio vorbereiten
+  const roar = new Audio("assets/roar.mp3");
+
+  // TOUCH START
+  card.addEventListener("touchstart", (e) => {
+    startX = e.touches[0].clientX;
+  });
+
+  // TOUCH END
+  card.addEventListener("touchend", (e) => {
+    endX = e.changedTouches[0].clientX;
+
+    let diff = startX - endX;
+
+    // Swipe erkennen
+    if (Math.abs(diff) > 50) {
+      card.classList.toggle("flipped");
+    } else {
+      // Tap = Sound
+      roar.currentTime = 0;
+      roar.play();
+    }
   });
 </script>
 
