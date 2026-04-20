@@ -187,7 +187,7 @@
   });
 
   // TILT
-  function applyTilt(x, y) {
+ function applyTilt(x, y) {
   const rotateY = (x - 0.5) * 15;
   const rotateX = (0.5 - y) * 15;
 
@@ -201,12 +201,11 @@
     rotateX(${rotateX}deg)
   `;
 
-  // HOLO POSITION
-  const percentX = x * 100;
-  const percentY = y * 100;
-
-  card.style.setProperty("--x", percentX + "%");
-  card.style.setProperty("--y", percentY + "%");
+  // LEICHTER LICHT-SHIFT (performant)
+  card.style.setProperty(
+    "transform",
+    `rotateZ(${rotateY * 0.2}deg)`
+  );
 }
 
   // DESKTOP
