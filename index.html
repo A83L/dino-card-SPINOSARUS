@@ -8,26 +8,42 @@
   <style>
     body {
       margin: 0;
-      background: black;
+      background: radial-gradient(circle at center, #111 0%, #000 100%);
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
       overflow: hidden;
+      font-family: sans-serif;
+    }
+
+    /* SOUND BUTTON */
+    .sound-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 20;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      backdrop-filter: blur(10px);
+      color: white;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 14px;
     }
 
     .card {
       width: 90vw;
       max-width: 400px;
       aspect-ratio: 2 / 3;
-      perspective: 1000px;
+      perspective: 1200px;
     }
 
     .card-inner {
       width: 100%;
       height: 100%;
       position: relative;
-      transition: transform 0.8s;
+      transition: transform 0.9s cubic-bezier(.22,1,.36,1);
       transform-style: preserve-3d;
     }
 
@@ -42,6 +58,11 @@
       backface-visibility: hidden;
       border-radius: 20px;
       overflow: hidden;
+
+      /* Glow Effekt */
+      box-shadow:
+        0 10px 40px rgba(0,0,0,0.8),
+        0 0 30px rgba(0,255,150,0.2);
     }
 
     .card-front {
@@ -62,12 +83,15 @@
 
 <body>
 
+<button class="sound-btn" id="soundBtn">🔇 Sound</button>
+
 <div class="card" id="card">
   <div class="card-inner">
 
-    <!-- Vorderseite -->
+    <!-- FRONT -->
     <div class="card-face card-front">
       <video 
+        id="video"
         src="assets/dino.mp4"
         autoplay 
         muted 
@@ -76,7 +100,7 @@
       </video>
     </div>
 
-    <!-- Rückseite -->
+    <!-- BACK -->
     <div class="card-face card-back">
       <img src="assets/back.jpg" alt="Back">
     </div>
@@ -86,12 +110,29 @@
 
 <script>
   const card = document.getElementById("card");
+  const video = document.getElementById("video");
+  const soundBtn = document.getElementById("soundBtn");
 
   let startX = 0;
   let endX = 0;
 
-  // Audio vorbereiten
   const roar = new Audio("assets/roar.mp3");
+
+  let soundOn = false;
+
+  // SOUND BUTTON
+  soundBtn.addEventListener("click", () => {
+    soundOn = !soundOn;
+
+    if (soundOn) {
+      video.muted = false;
+      video.play();
+      soundBtn.innerText = "🔊 Sound";
+    } else {
+      video.muted = true;
+      soundBtn.innerText = "🔇 Sound";
+    }
+  });
 
   // TOUCH START
   card.addEventListener("touchstart", (e) => {
@@ -101,14 +142,11 @@
   // TOUCH END
   card.addEventListener("touchend", (e) => {
     endX = e.changedTouches[0].clientX;
-
     let diff = startX - endX;
 
-    // Swipe erkennen
     if (Math.abs(diff) > 50) {
       card.classList.toggle("flipped");
     } else {
-      // Tap = Sound
       roar.currentTime = 0;
       roar.play();
     }
