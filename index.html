@@ -7,30 +7,25 @@
 
   <style>
     body {
-  margin: 0;
-  background: radial-gradient(circle at center, #111 0%, #000 100%);
+      margin: 0;
+      background: radial-gradient(circle at center, #111 0%, #000 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+      font-family: sans-serif;
+    }
 
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  min-height: 100vh;
-  overflow: hidden;
-  font-family: sans-serif;
-}
-
-    /* BUTTONS OBEN */
     .top-ui {
-  position: fixed;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-
-  display: flex;
-  gap: 10px;
-
-  z-index: 999;
-}
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+      z-index: 999;
+    }
 
     .btn {
       background: rgba(0,0,0,0.6);
@@ -46,8 +41,7 @@
       width: 90vw;
       max-width: 400px;
       aspect-ratio: 2 / 3;
-      perspective: 1400px;
-      position: relative;
+      perspective: 1200px;
     }
 
     .card-inner {
@@ -55,7 +49,7 @@
       height: 100%;
       position: relative;
       transform-style: preserve-3d;
-      transition: transform 1s cubic-bezier(.2,.8,.2,1);
+      transition: transform 0.8s ease;
     }
 
     .card.flipped .card-inner {
@@ -69,22 +63,13 @@
       backface-visibility: hidden;
       border-radius: 20px;
       overflow: hidden;
-
-      box-shadow:
-        0 25px 80px rgba(0,0,0,0.9),
-        0 0 60px rgba(0,255,180,0.4),
-        inset 0 0 25px rgba(255,255,255,0.08);
-    }
-
-    .card-front {
-      background: black;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.9);
     }
 
     .card-back {
       transform: rotateY(180deg);
     }
 
-   
     video, img {
       width: 100%;
       height: 100%;
@@ -103,7 +88,7 @@
 <div class="card" id="card">
   <div class="card-inner" id="cardInner">
 
-    <div class="card-face card-front">
+    <div class="card-face">
       <video 
         id="video"
         src="assets/dino.mp4"
@@ -115,131 +100,71 @@
     </div>
 
     <div class="card-face card-back">
-      <img src="assets/back.jpg" alt="Back">
+      <img src="assets/back.jpg">
     </div>
 
   </div>
 </div>
 
 <script>
-  const card = document.getElementById("card");
-  const inner = document.getElementById("cardInner");
-  const video = document.getElementById("video");
-  const soundBtn = document.getElementById("soundBtn");
-  const motionBtn = document.getElementById("motionBtn");
+const card = document.getElementById("card");
+const video = document.getElementById("video");
+const soundBtn = document.getElementById("soundBtn");
+const motionBtn = document.getElementById("motionBtn");
 
-  let startX = 0;
-  let endX = 0;
+let startX = 0;
+let endX = 0;
 
-  const roar = new Audio("assets/roar.mp3");
+const roar = new Audio("assets/roar.mp3");
 
-  let soundOn = false;
+let soundOn = false;
 
-  // SOUND BUTTON
-  soundBtn.addEventListener("click", () => {
-    soundOn = !soundOn;
+// SOUND BUTTON
+soundBtn.addEventListener("click", () => {
+  soundOn = !soundOn;
 
-    if (soundOn) {
-      video.muted = false;
-      video.play();
-      soundBtn.innerText = "🔊 Sound";
-    } else {
-      video.muted = true;
-      soundBtn.innerText = "🔇 Sound";
-    }
-  });
+  if (soundOn) {
+    video.muted = false;
+    video.play();
+    soundBtn.innerText = "🔊 Sound";
+  } else {
+    video.muted = true;
+    soundBtn.innerText = "🔇 Sound";
+  }
+});
 
-  // SWIPE + TAP
-  card.addEventListener("touchstart", (e) => {
-    startX = e.touches[0].clientX;
-  });
+// SWIPE + TAP
+card.addEventListener("touchstart", (e) => {
+  startX = e.touches[0].clientX;
+});
 
-  card.addEventListener("touchend", (e) => {
-    endX = e.changedTouches[0].clientX;
-    let diff = startX - endX;
+card.addEventListener("touchend", (e) => {
+  endX = e.changedTouches[0].clientX;
+  let diff = startX - endX;
 
-    if (Math.abs(diff) > 50) {
-      card.classList.toggle("flipped");
-    } else {
-      roar.currentTime = 0;
-      roar.play();
-    }
-  });
+  if (Math.abs(diff) > 50) {
+    card.classList.toggle("flipped");
+  } else {
+    roar.currentTime = 0;
+    roar.play();
+  }
+});
 
-  // TILT
-let ticking = false;
+// ===== iOS MOTION FIX =====
+if (typeof DeviceOrientationEvent !== "undefined" &&
+    typeof DeviceOrientationEvent.requestPermission === "function") {
 
-function applyTilt(x, y) {
-  if (ticking) return;
-  ticking = true;
+  motionBtn.style.display = "block";
 
-  requestAnimationFrame(() => {
-    const rotateY = (x - 0.5) * 10;
-    const rotateX = (0.5 - y) * 10;
-
-    let base = card.classList.contains("flipped")
-      ? "rotateY(180deg)"
-      : "";
-
-    inner.style.transform = `
-      ${base}
-      rotateY(${rotateY}deg)
-      rotateX(${rotateX}deg)
-    `;
-
-    ticking = false;
+  motionBtn.addEventListener("click", () => {
+    DeviceOrientationEvent.requestPermission()
+      .then(response => {
+        if (response === "granted") {
+          motionBtn.style.display = "none";
+        }
+      });
   });
 }
-
-  // DESKTOP
-  card.addEventListener("mousemove", (e) => {
-    const rect = card.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width;
-    const y = (e.clientY - rect.top) / rect.height;
-    applyTilt(x, y);
-  });
-
-  card.addEventListener("mouseleave", () => {
-    inner.style.transform = card.classList.contains("flipped")
-      ? "rotateY(180deg)"
-      : "";
-  });
-
-  // iOS CHECK
-  if (typeof DeviceOrientationEvent !== "undefined" &&
-      typeof DeviceOrientationEvent.requestPermission === "function") {
-    
-    motionBtn.style.display = "block";
-
-    motionBtn.addEventListener("click", () => {
-      DeviceOrientationEvent.requestPermission()
-        .then(response => {
-          if (response === "granted") {
-            window.addEventListener("deviceorientation", (e) => {
-              let x = e.gamma / 30;
-              let y = e.beta / 60;
-              applyTilt(0.5 + x, 0.5 + y);
-            });
-            motionBtn.style.display = "none";
-          }
-        });
-    });
-
-  } else {
-    // Android direkt aktiv
-    let lastUpdate = 0;
-
-window.addEventListener("deviceorientation", (e) => {
-  const now = Date.now();
-  if (now - lastUpdate < 50) return; // max ~20fps
-
-  lastUpdate = now;
-
-  let x = e.gamma / 30;
-  let y = e.beta / 60;
-
-  applyTilt(0.5 + x, 0.5 + y);
-});
 </script>
 
 </body>
