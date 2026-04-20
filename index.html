@@ -227,12 +227,19 @@ function applyTilt(x, y) {
 
   } else {
     // Android direkt aktiv
-    window.addEventListener("deviceorientation", (e) => {
-      let x = e.gamma / 30;
-      let y = e.beta / 60;
-      applyTilt(0.5 + x, 0.5 + y);
-    });
-  }
+    let lastUpdate = 0;
+
+window.addEventListener("deviceorientation", (e) => {
+  const now = Date.now();
+  if (now - lastUpdate < 50) return; // max ~20fps
+
+  lastUpdate = now;
+
+  let x = e.gamma / 30;
+  let y = e.beta / 60;
+
+  applyTilt(0.5 + x, 0.5 + y);
+});
 </script>
 
 </body>
