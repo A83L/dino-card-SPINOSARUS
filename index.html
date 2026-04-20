@@ -82,7 +82,6 @@
 
 <div class="top-ui">
   <button class="btn" id="soundBtn">🔇 Sound</button>
-  <button class="btn" id="motionBtn" style="display:none;">📱 Motion</button>
 </div>
 
 <div class="card" id="card">
@@ -110,7 +109,7 @@
 const card = document.getElementById("card");
 const video = document.getElementById("video");
 const soundBtn = document.getElementById("soundBtn");
-const motionBtn = document.getElementById("motionBtn");
+
 
 let startX = 0;
 let endX = 0;
@@ -150,21 +149,7 @@ card.addEventListener("touchend", (e) => {
   }
 });
 
-// ===== iOS MOTION FIX =====
-if (typeof DeviceOrientationEvent !== "undefined" &&
-    typeof DeviceOrientationEvent.requestPermission === "function") {
 
-  motionBtn.style.display = "block";
-
-  motionBtn.addEventListener("click", () => {
-    DeviceOrientationEvent.requestPermission()
-      .then(response => {
-        if (response === "granted") {
-          motionBtn.style.display = "none";
-        }
-      });
-  });
-}
 </script>
 
 </body>
