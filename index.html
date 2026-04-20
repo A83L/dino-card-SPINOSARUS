@@ -85,23 +85,26 @@
     }
 
     .card::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: 20px;
-      pointer-events: none;
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  pointer-events: none;
 
-      background: linear-gradient(
-        120deg,
-        rgba(255,0,150,0.2),
-        rgba(0,255,255,0.2),
-        rgba(255,255,0,0.2)
-      );
+  background: radial-gradient(
+    circle at var(--x, 50%) var(--y, 50%),
+    rgba(255,255,255,0.25),
+    rgba(255,0,150,0.2),
+    rgba(0,255,255,0.2),
+    rgba(255,255,0,0.15),
+    transparent 60%
+  );
 
-      mix-blend-mode: overlay;
-      opacity: 0.6;
-      z-index: 10;
-    }
+  mix-blend-mode: color-dodge;
+  opacity: 0.8;
+  z-index: 10;
+  transition: opacity 0.2s;
+}
 
     video, img {
       width: 100%;
@@ -186,19 +189,26 @@
 
   // TILT
   function applyTilt(x, y) {
-    const rotateY = (x - 0.5) * 15;
-    const rotateX = (0.5 - y) * 15;
+  const rotateY = (x - 0.5) * 15;
+  const rotateX = (0.5 - y) * 15;
 
-    let base = card.classList.contains("flipped")
-      ? "rotateY(180deg)"
-      : "";
+  let base = card.classList.contains("flipped")
+    ? "rotateY(180deg)"
+    : "";
 
-    inner.style.transform = `
-      ${base}
-      rotateY(${rotateY}deg)
-      rotateX(${rotateX}deg)
-    `;
-  }
+  inner.style.transform = `
+    ${base}
+    rotateY(${rotateY}deg)
+    rotateX(${rotateX}deg)
+  `;
+
+  // HOLO POSITION
+  const percentX = x * 100;
+  const percentY = y * 100;
+
+  card.style.setProperty("--x", percentX + "%");
+  card.style.setProperty("--y", percentY + "%");
+}
 
   // DESKTOP
   card.addEventListener("mousemove", (e) => {
