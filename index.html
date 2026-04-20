@@ -148,6 +148,7 @@ let startX = 0;
 let endX = 0;
 
 const roar = new Audio("assets/roar.mp3");
+const flipSound = new Audio("assets/flip.mp3");
 
 let soundOn = false;
 
@@ -177,7 +178,11 @@ card.addEventListener("touchend", (e) => {
   if (Math.abs(diff) > 50) {
     card.classList.toggle("flipped");
 
-// Flash triggern
+// Flip Sound
+flipSound.currentTime = 0;
+flipSound.play();
+
+// Flash Effekt
 card.classList.add("flash");
 setTimeout(() => {
   card.classList.remove("flash");
