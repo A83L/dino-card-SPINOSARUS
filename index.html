@@ -85,36 +85,39 @@
 
     /* 🔥 FIXED FLASH (jetzt im 3D-Kontext) */
     .flash-layer {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      z-index: 5;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
 
-      background: linear-gradient(
-        120deg,
-        transparent,
-        rgba(255,255,255,0.4),
-        transparent
-      );
+  background: linear-gradient(
+    120deg,
+    transparent 40%,
+    rgba(255,255,255,0.5) 50%,
+    transparent 60%
+  );
 
-      transform: translateX(-150%) skewX(-20deg);
-      opacity: 0;
-    }
+  transform: translateX(0) skewX(-20deg);
+  opacity: 0;
+}
 
-    .card.flash .flash-layer {
-      animation: flashMove 0.6s ease;
-    }
+.card.flash .flash-layer {
+  animation: flashCenter 0.6s ease;
+}
 
-    @keyframes flashMove {
-      0% {
-        transform: translateX(-150%) skewX(-20deg);
-        opacity: 1;
-      }
-      100% {
-        transform: translateX(150%) skewX(-20deg);
-        opacity: 0;
-      }
-    }
+@keyframes flashCenter {
+  0% {
+    transform: translateX(0) skewX(-20deg);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(60%) skewX(-20deg);
+    opacity: 0;
+  }
+}
   </style>
 </head>
 
