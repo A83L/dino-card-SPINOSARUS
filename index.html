@@ -92,29 +92,29 @@
 
   background: linear-gradient(
     120deg,
-    transparent 40%,
+    transparent 0%,
     rgba(255,255,255,0.5) 50%,
-    transparent 60%
+    transparent 100%
   );
 
-  transform: translateX(0) skewX(-10deg);
+  transform: translateX(-100%) skewX(-10deg);
   opacity: 0;
 }
 
 .card.flash .flash-layer {
-  animation: flashCenter 0.6s ease;
+  animation: flashSweep 0.6s ease;
 }
 
-@keyframes flashCenter {
+@keyframes flashSweep {
   0% {
-    transform: translateX(0) skewX(-10deg);
+    transform: translateX(-100%) skewX(-10deg);
     opacity: 0;
   }
   30% {
     opacity: 1;
   }
   100% {
-    transform: translateX(60%) skewX(-10deg);
+    transform: translateX(100%) skewX(-10deg);
     opacity: 0;
   }
 }
